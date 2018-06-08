@@ -1,5 +1,6 @@
 require('pg')
 require_relative('../db/sql_runner.rb')
+require_relative('./ticket.rb')
 
 class Customer
 
@@ -55,5 +56,42 @@ attr_reader(:id)
     result = customer_data.map { |customer| Customer.new( customer ) }
     return result
   end
+
+  def tickets_bought
+    sql = "SELECT COUNT(*) FROM tickets WHERE customer_id = $1"
+    values = [@id]
+    tickets = SqlRunner.run(sql, values)
+    return tickets[0]['count'].to_i
+  end
+
+  def buy_ticket(film_name)
+    sql = 'SELECT * FROM films WHERE title = $1'
+    values = [film_name]
+    film = SqlRunner.run(sql, values)
+    # This gets everything from film1(Deadpool), name price etc
+    film_hash = film[0]
+    @wallet -= film_hash['price'].to_i
+    return Ticket.new ({'customer_id' => @id ,'film_id' => film_hash['id'].to_i})
+  end
+
+  # or
+
+  def buy_ticket2(film)
+    @wallet -= film.price
+    update()
+    ticket = Ticket.new ({'customer_id' => @id ,'film_id' => film.id})
+    ticket.save()
+    return ticket
+  end
+
+  # def tickets_bought_again
+  #   sql = 'SELECT * FROM customers
+  #   INNER JOIN tickets
+  #   ON tickets.customer_id = customers.id
+  #   WHERE customer_id = $1'
+  #   values = [@id]
+  #   tickets_bought = SqlRunner.run(sql, values)
+  #   return  Film.map_items(tickets_bought)
+  # end
 
 end

@@ -51,6 +51,13 @@ attr_accessor(:title, :price)
     return Customer.map_items(customer_data)
   end
 
+  def viewers
+    sql = "SELECT COUNT(*) FROM tickets WHERE film_id = $1"
+    values = [@id]
+    views = SqlRunner.run(sql, values)
+    return views[0]['count'].to_i
+  end
+
   def self.map_items(film_data)
     result = film_data.map { |film| Film.new( film ) }
     return result
