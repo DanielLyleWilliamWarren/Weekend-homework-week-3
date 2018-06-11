@@ -76,13 +76,13 @@ attr_reader(:id)
 
   # or
 
-  def buy_ticket2(film)
-    @wallet -= film.price
-    update()
-    ticket = Ticket.new ({'customer_id' => @id ,'film_id' => film.id})
-    ticket.save()
-    return ticket
-  end
+  # def buy_ticket2(film)
+  #   @wallet -= film.price
+  #   update()
+  #   ticket = Ticket.new ({'customer_id' => @id ,'film_id' => film.id})
+  #   ticket.save()
+  #   return ticket
+  # end
 
   # def tickets_bought_again
   #   sql = 'SELECT * FROM customers
